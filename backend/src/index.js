@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/todos', todoRoutes);
+app.use('/api/v1/todos', todoRoutes);
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
