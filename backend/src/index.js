@@ -2,12 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const todoRoutes = require('./routes/todo.routes');
+const { apiLimiter } = require('./middlewares/rateLimit.middleware');
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/', apiLimiter);
 
 // Routes
 app.use('/api/v1/todos', todoRoutes);
