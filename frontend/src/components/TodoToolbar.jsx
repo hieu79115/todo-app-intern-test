@@ -1,4 +1,4 @@
-import { Box, TextField, InputAdornment, IconButton, Tabs, Tab } from '@mui/material';
+import { Box, TextField, InputAdornment, IconButton, Tabs, Tab, useTheme, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 
@@ -9,6 +9,9 @@ const TodoToolbar = ({
   onStatusFilterChange, 
   isActionLoading 
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Box sx={{ p: 2.5, pb: 1.5 }}>
       <Box 
@@ -53,6 +56,7 @@ const TodoToolbar = ({
           onChange={(e, newValue) => onStatusFilterChange(newValue)}
           textColor="primary"
           indicatorColor="primary"
+          variant={isMobile ? "fullWidth" : "standard"}
           sx={{
             minHeight: 36,
             height: 36,

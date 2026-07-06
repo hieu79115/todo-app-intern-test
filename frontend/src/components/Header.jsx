@@ -9,22 +9,24 @@ const Header = ({ onAddClick, themeMode, onThemeToggle, isFetching }) => {
     <Box 
       sx={{ 
         display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between', 
-        alignItems: 'center', 
+        alignItems: { xs: 'stretch', sm: 'center' }, 
+        gap: 2,
         mb: 4,
         pb: 2,
         borderBottom: '1px solid',
         borderColor: 'divider'
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 1.5 }}>
         <PlaylistAddCheckIcon color="primary" sx={{ fontSize: 36 }} />
         <Typography variant="h5" fontWeight="bold" letterSpacing="-0.5px">
           Todo List
         </Typography>
       </Box>
       
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'space-between', sm: 'flex-end' }, gap: 1.5 }}>
         <Button
           variant="contained"
           color="primary"
@@ -32,6 +34,7 @@ const Header = ({ onAddClick, themeMode, onThemeToggle, isFetching }) => {
           onClick={onAddClick}
           disabled={isFetching}
           sx={{ 
+            flexGrow: { xs: 1, sm: 0 },
             px: 2.5,
             py: 0.8,
             fontSize: '0.9rem',

@@ -29,7 +29,7 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
       }}
     >
       {/* 1. Công việc (Title) */}
-      <TableCell sx={{ py: 1.5 }}>
+      <TableCell sx={{ py: 1.5, pl: 3.5 }}>
         <Typography 
           variant="body1" 
           sx={{ 

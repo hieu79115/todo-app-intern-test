@@ -1,5 +1,12 @@
 # Todo App - Intern Test
 
+## Tech Stack
+
+* **Frontend:** React.js (Vite), Material UI (MUI), Axios.
+* **Backend:** Express.js (Node.js), RESTful API.
+* **Database:** PostgreSQL (Supabase).
+* **Deployment:** Vercel (Frontend) & Render (Backend).
+
 ## Cấu trúc dự án (Monorepo)
 - `frontend/`: React + Vite + Material UI
 - `backend/`: Express.js + Supabase
@@ -21,3 +28,5 @@ cd frontend
 npm install
 npm run dev
 *(Giao diện sẽ chạy tại http://localhost:5173)*
+
+🔗 **Live Demo:** [https://todo-app-intern-test.vercel.app/](https://todo-app-intern-test.vercel.app/)
