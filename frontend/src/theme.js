@@ -27,12 +27,25 @@ export const getDesignTokens = (mode) => ({
     background: {
       default: mode === 'light' ? '#f8fafc' : '#0f172a', // Slate 50 vs Slate 900
       paper: mode === 'light' ? '#ffffff' : '#1e293b',   // White vs Slate 800
+      neutral: mode === 'light' ? '#f1f5f9' : '#1e293b', // Grey background for headers, tabs
     },
     text: {
       primary: mode === 'light' ? '#0f172a' : '#f8fafc',
       secondary: mode === 'light' ? '#64748b' : '#94a3b8',
     },
     divider: mode === 'light' ? '#e2e8f0' : '#334155',
+    custom: {
+      tabsIndicatorBg: mode === 'light' ? '#ffffff' : '#0f172a',
+      tabsIndicatorShadow: mode === 'light' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+      completedBg: mode === 'light' ? '#f8fafc' : '#111b27',
+      completedChipBg: mode === 'light' ? '#e6fcf5' : '#064e3b',
+      completedChipText: mode === 'light' ? '#0ca678' : '#34d399',
+      actionEditBg: mode === 'light' ? '#f0f3ff' : '#232f57',
+      actionEditHoverBg: mode === 'light' ? '#e0e7ff' : '#312e81',
+      actionDeleteBg: mode === 'light' ? '#fff0f2' : '#4c1d24',
+      actionDeleteHoverBg: mode === 'light' ? '#ffe2e6' : '#881337',
+      primaryBtnShadow: mode === 'light' ? '0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -2px rgba(99, 102, 241, 0.2)' : 'none',
+    },
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -78,11 +91,11 @@ export const getDesignTokens = (mode) => ({
     },
     MuiTableCell: {
       styleOverrides: {
-        head: {
+        head: ({ theme }) => ({
           fontWeight: 600,
-          backgroundColor: mode === 'light' ? '#f1f5f9' : '#1e293b',
-          color: mode === 'light' ? '#475569' : '#94a3b8',
-        },
+          backgroundColor: theme.palette.background.neutral,
+          color: theme.palette.mode === 'light' ? '#475569' : '#94a3b8',
+        }),
         root: {
           padding: '16px',
         },

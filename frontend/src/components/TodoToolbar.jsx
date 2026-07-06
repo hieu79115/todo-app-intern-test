@@ -56,7 +56,7 @@ const TodoToolbar = ({
           sx={{
             minHeight: 36,
             height: 36,
-            backgroundColor: (theme) => theme.palette.mode === 'light' ? '#f1f5f9' : '#1e293b',
+            backgroundColor: (theme) => theme.palette.background.neutral,
             borderRadius: 2,
             p: 0.5,
             alignSelf: { xs: 'stretch', sm: 'auto' },
@@ -64,8 +64,8 @@ const TodoToolbar = ({
               height: '100%',
               borderRadius: 1.5,
               zIndex: 0,
-              backgroundColor: (theme) => theme.palette.mode === 'light' ? '#ffffff' : '#0f172a',
-              boxShadow: (theme) => theme.palette.mode === 'light' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
+              backgroundColor: (theme) => theme.palette.custom.tabsIndicatorBg,
+              boxShadow: (theme) => theme.palette.custom.tabsIndicatorShadow
             },
             '& .MuiTab-root': {
               minHeight: 28,

@@ -1,10 +1,10 @@
 const supabase = require('../config/supabase');
 
 const TodoService = {
-    async getAllTodos(clientId, search = '', status = '') {
+    async getAllTodos(clientId, search = '', status = '', page, limit) {
         let query = supabase
             .from('todos')
-            .select('*')
+            .select('*', { count: 'exact' })
             .eq('client_id', clientId)
             .order('created_at', { ascending: false });
 
@@ -17,9 +17,22 @@ const TodoService = {
             query = query.eq('is_completed', isCompleted);
         }
 
-        const { data, error } = await query;
+        if (page !== undefined && limit !== undefined) {
+            const parsedPage = parseInt(page, 10);
+            const parsedLimit = parseInt(limit, 10);
+            if (!isNaN(parsedPage) && !isNaN(parsedLimit)) {
+                const from = parsedPage * parsedLimit;
+                const to = from + parsedLimit - 1;
+                query = query.range(from, to);
+            }
+        }
+
+        const { data, error, count } = await query;
         if (error) throw error;
-        return data;
+        return {
+            data: data || [],
+            total: count || 0
+        };
     },
 
     async createTodo(clientId, title) {

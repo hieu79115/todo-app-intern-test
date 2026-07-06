@@ -35,9 +35,7 @@ const Header = ({ onAddClick, themeMode, onThemeToggle, isFetching }) => {
             px: 2.5,
             py: 0.8,
             fontSize: '0.9rem',
-            boxShadow: (theme) => theme.palette.mode === 'light' 
-              ? '0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -2px rgba(99, 102, 241, 0.2)' 
-              : 'none',
+            boxShadow: (theme) => theme.palette.custom.primaryBtnShadow,
           }}
         >
           Thêm công việc

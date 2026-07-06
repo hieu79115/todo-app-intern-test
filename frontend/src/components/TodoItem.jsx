@@ -21,11 +21,10 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
         transition: 'all 0.2s',
         backgroundColor: (theme) => 
           todo.is_completed 
-            ? theme.palette.mode === 'light' ? '#f8fafc' : '#111b27' 
+            ? theme.palette.custom.completedBg 
             : 'inherit',
         '&:hover': {
-          backgroundColor: (theme) => 
-            theme.palette.mode === 'light' ? '#f1f5f9' : '#1e293b'
+          backgroundColor: (theme) => theme.palette.background.neutral
         }
       }}
     >
@@ -64,8 +63,8 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
             sx={{ 
               fontWeight: 600,
               fontSize: '0.75rem',
-              backgroundColor: (theme) => theme.palette.mode === 'light' ? '#e6fcf5' : '#064e3b',
-              color: (theme) => theme.palette.mode === 'light' ? '#0ca678' : '#34d399'
+              backgroundColor: (theme) => theme.palette.custom.completedChipBg,
+              color: (theme) => theme.palette.custom.completedChipText
             }} 
           />
         ) : (
@@ -100,9 +99,9 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
                 onClick={() => onEdit(todo)}
                 disabled={disabled}
                 sx={{
-                  backgroundColor: (theme) => theme.palette.mode === 'light' ? '#f0f3ff' : '#232f57',
+                  backgroundColor: (theme) => theme.palette.custom.actionEditBg,
                   '&:hover': {
-                    backgroundColor: (theme) => theme.palette.mode === 'light' ? '#e0e7ff' : '#312e81'
+                    backgroundColor: (theme) => theme.palette.custom.actionEditHoverBg
                   }
                 }}
               >
@@ -119,9 +118,9 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
                 onClick={() => onDelete(todo.id)} 
                 disabled={disabled}
                 sx={{
-                  backgroundColor: (theme) => theme.palette.mode === 'light' ? '#fff0f2' : '#4c1d24',
+                  backgroundColor: (theme) => theme.palette.custom.actionDeleteBg,
                   '&:hover': {
-                    backgroundColor: (theme) => theme.palette.mode === 'light' ? '#ffe2e6' : '#881337'
+                    backgroundColor: (theme) => theme.palette.custom.actionDeleteHoverBg
                   }
                 }}
               >

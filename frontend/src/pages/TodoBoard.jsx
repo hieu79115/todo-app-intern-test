@@ -12,12 +12,24 @@ import TodoDialog from '../components/TodoDialog';
 const TodoBoard = ({ themeMode, onThemeToggle }) => {
   // Todo States
   const [todos, setTodos] = useState([]);
+  const [totalTodos, setTotalTodos] = useState(0);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'active' | 'completed'
 
   // Pagination States
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Wrappers to handle page reset when filters change
+  const handleSearchChange = (newSearch) => {
+    setSearch(newSearch);
+    setPage(0);
+  };
+
+  const handleStatusFilterChange = (newStatus) => {
+    setStatusFilter(newStatus);
+    setPage(0);
+  };
 
   // UX states
   const [isFetching, setIsFetching] = useState(true);
@@ -39,15 +51,18 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
   };
 
   // Fetch todos from API using todoApi service
-  const fetchTodos = async (searchQuery = search, statusQuery = statusFilter) => {
+  const fetchTodos = async (searchQuery = search, statusQuery = statusFilter, currentPage = page, currentRowsPerPage = rowsPerPage) => {
     setIsFetching(true);
     try {
       const apiStatus = statusQuery === 'completed' ? 'true' : statusQuery === 'active' ? 'false' : '';
       const response = await todoApi.getAll({
         search: searchQuery,
-        status: apiStatus
+        status: apiStatus,
+        page: currentPage,
+        limit: currentRowsPerPage
       });
-      setTodos(response.data);
+      setTodos(response.data.data);
+      setTotalTodos(response.data.total);
     } catch (error) {
       showToast('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại!', 'error');
       console.error(error);
@@ -56,15 +71,14 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     }
   };
 
-  // Debounced API fetch when search or statusFilter changes
+  // Debounced API fetch when search, statusFilter, page, or rowsPerPage changes
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      fetchTodos(search, statusFilter);
-      setPage(0); // Reset page to 0 on filter/search change
+      fetchTodos(search, statusFilter, page, rowsPerPage);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [search, statusFilter]);
+  }, [search, statusFilter, page, rowsPerPage]);
 
   // CRUD actions using todoApi service
   const handleOpenAddDialog = () => {
@@ -85,15 +99,20 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
       if (dialogMode === 'add') {
         await todoApi.create(title);
         showToast('Thêm công việc thành công!', 'success');
+        if (page === 0) {
+          await fetchTodos(search, statusFilter, 0, rowsPerPage);
+        } else {
+          setPage(0);
+        }
       } else {
         await todoApi.update(editingTodo.id, { 
           title, 
           is_completed: editingTodo.is_completed 
         });
         showToast('Cập nhật công việc thành công!', 'success');
+        await fetchTodos(search, statusFilter, page, rowsPerPage);
       }
       setDialogOpen(false);
-      await fetchTodos();
     } catch (error) {
       showToast(dialogMode === 'add' ? 'Lỗi khi thêm công việc' : 'Lỗi khi cập nhật công việc', 'error');
     } finally {
@@ -106,7 +125,12 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     try {
       await todoApi.update(id, { is_completed: !currentStatus });
       showToast(!currentStatus ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc!', 'success');
-      await fetchTodos();
+      
+      if ((statusFilter === 'active' || statusFilter === 'completed') && todos.length === 1 && page > 0) {
+        setPage(page - 1);
+      } else {
+        await fetchTodos(search, statusFilter, page, rowsPerPage);
+      }
     } catch (error) {
       showToast('Lỗi khi cập nhật trạng thái', 'error');
     } finally {
@@ -119,7 +143,12 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     try {
       await todoApi.delete(id);
       showToast('Đã xóa công việc thành công!', 'success');
-      await fetchTodos();
+      
+      if (todos.length === 1 && page > 0) {
+        setPage(page - 1);
+      } else {
+        await fetchTodos(search, statusFilter, page, rowsPerPage);
+      }
     } catch (error) {
       showToast('Lỗi khi xóa công việc', 'error');
     } finally {
@@ -154,9 +183,9 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
           {/* Table Toolbar */}
           <TodoToolbar 
             search={search}
-            onSearchChange={setSearch}
+            onSearchChange={handleSearchChange}
             statusFilter={statusFilter}
-            onStatusFilterChange={setStatusFilter}
+            onStatusFilterChange={handleStatusFilterChange}
             isActionLoading={isActionLoading}
           />
 
@@ -167,6 +196,7 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
           {/* Table */}
           <TodoTable 
             todos={todos}
+            totalTodos={totalTodos}
             isFetching={isFetching}
             isActionLoading={isActionLoading}
             search={search}

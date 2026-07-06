@@ -7,6 +7,7 @@ import TodoItem from './TodoItem';
 
 const TodoTable = ({
   todos = [],
+  totalTodos = 0,
   isFetching,
   isActionLoading,
   search,
@@ -18,7 +19,7 @@ const TodoTable = ({
   onEdit,
   onDelete
 }) => {
-  const displayedTodos = todos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const displayedTodos = todos;
 
   return (
     <>
@@ -94,10 +95,10 @@ const TodoTable = ({
       </TableContainer>
 
       {/* Table Pagination */}
-      {todos.length > 0 && (
+      {totalTodos > 0 && (
         <TablePagination
           component="div"
-          count={todos.length}
+          count={totalTodos}
           page={page}
           onPageChange={onPageChange}
           rowsPerPage={rowsPerPage}

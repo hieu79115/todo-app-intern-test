@@ -6,9 +6,14 @@ const TodoController = {
       const clientId = req.headers['x-client-id'];
       if (!clientId) return res.status(400).json({ message: 'Thiếu client_id' });
 
-      const { search, status } = req.query;
-      const todos = await TodoService.getAllTodos(clientId, search, status);
-      res.status(200).json(todos);
+      const { search, status, page, limit } = req.query;
+      const { data, total } = await TodoService.getAllTodos(clientId, search, status, page, limit);
+      res.status(200).json({
+        data,
+        total,
+        page: page !== undefined ? parseInt(page, 10) : 0,
+        limit: limit !== undefined ? parseInt(limit, 10) : data.length
+      });
     } catch (error) {
       res.status(500).json({ message: 'Lỗi server', error: error.message });
     }
