@@ -80,6 +80,7 @@ const TodoToolbar = ({
               textTransform: 'none',
               color: 'text.secondary',
               px: 2,
+              whiteSpace: 'nowrap',
               '&.Mui-selected': {
                 color: 'primary.main',
               }

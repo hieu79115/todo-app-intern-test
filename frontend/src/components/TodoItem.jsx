@@ -54,7 +54,7 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
       </TableCell>
       
       {/* 3. Trạng thái (Status Badge) */}
-      <TableCell align="center" sx={{ py: 1.5 }}>
+      <TableCell align="center" sx={{ py: 1.5, whiteSpace: 'nowrap' }}>
         {todo.is_completed ? (
           <Chip 
             label="Đã xong" 
@@ -64,7 +64,8 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
               fontWeight: 600,
               fontSize: '0.75rem',
               backgroundColor: (theme) => theme.palette.custom.completedChipBg,
-              color: (theme) => theme.palette.custom.completedChipText
+              color: (theme) => theme.palette.custom.completedChipText,
+              whiteSpace: 'nowrap'
             }} 
           />
         ) : (
@@ -75,7 +76,8 @@ const TodoItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
             variant="outlined"
             sx={{ 
               fontWeight: 600,
-              fontSize: '0.75rem'
+              fontSize: '0.75rem',
+              whiteSpace: 'nowrap'
             }} 
           />
         )}

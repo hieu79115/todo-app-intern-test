@@ -6,6 +6,7 @@ const TodoService = {
             .from('todos')
             .select('*', { count: 'exact' })
             .eq('client_id', clientId)
+            .is('deleted_at', null)
             .order('created_at', { ascending: false });
 
         if (search) {
@@ -62,7 +63,7 @@ const TodoService = {
     async deleteTodo(id, clientId) {
         const { error } = await supabase
             .from('todos')
-            .delete()
+            .update({ deleted_at: new Date() })
             .eq('id', id)
             .eq('client_id', clientId);
 

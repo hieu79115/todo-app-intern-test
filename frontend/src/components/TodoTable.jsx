@@ -110,11 +110,11 @@ const TodoTable = ({
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ pl: 3.5 }}>Công việc</TableCell>
-              <TableCell padding="checkbox" align="center" style={{ width: 120 }}>Hoàn thành</TableCell>
-              <TableCell align="center" style={{ width: 120 }}>Trạng thái</TableCell>
-              <TableCell align="center" style={{ width: 185 }}>Ngày tạo</TableCell>
-              <TableCell align="right" style={{ width: 120, paddingRight: 24 }}>Thao tác</TableCell>
+              <TableCell sx={{ pl: 3.5, whiteSpace: 'nowrap' }}>Công việc</TableCell>
+              <TableCell padding="checkbox" align="center" style={{ width: 120, whiteSpace: 'nowrap' }}>Hoàn thành</TableCell>
+              <TableCell align="center" style={{ width: 120, whiteSpace: 'nowrap' }}>Trạng thái</TableCell>
+              <TableCell align="center" style={{ width: 185, whiteSpace: 'nowrap' }}>Ngày tạo</TableCell>
+              <TableCell align="right" style={{ width: 120, paddingRight: 24, whiteSpace: 'nowrap' }}>Thao tác</TableCell>
             </TableRow>
           </TableHead>
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { 
-  Container, Box, Paper, Snackbar, Alert, LinearProgress 
+import {
+  Container, Box, Paper, Snackbar, Alert, LinearProgress,
+  Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography
 } from '@mui/material';
 
 import todoApi from '../api/todoApi';
@@ -40,6 +41,10 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState('add'); // 'add' | 'edit'
   const [editingTodo, setEditingTodo] = useState(null);
+
+  // Confirm delete states
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [todoIdToDelete, setTodoIdToDelete] = useState(null);
 
   // Toast handler
   const showToast = (message, severity = 'success') => {
@@ -105,9 +110,9 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
           setPage(0);
         }
       } else {
-        await todoApi.update(editingTodo.id, { 
-          title, 
-          is_completed: editingTodo.is_completed 
+        await todoApi.update(editingTodo.id, {
+          title,
+          is_completed: editingTodo.is_completed
         });
         showToast('Cập nhật công việc thành công!', 'success');
         await fetchTodos(search, statusFilter, page, rowsPerPage);
@@ -125,7 +130,7 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     try {
       await todoApi.update(id, { is_completed: !currentStatus });
       showToast(!currentStatus ? 'Đã hoàn thành công việc!' : 'Đã mở lại công việc!', 'success');
-      
+
       if ((statusFilter === 'active' || statusFilter === 'completed') && todos.length === 1 && page > 0) {
         setPage(page - 1);
       } else {
@@ -143,7 +148,7 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     try {
       await todoApi.delete(id);
       showToast('Đã xóa công việc thành công!', 'success');
-      
+
       if (todos.length === 1 && page > 0) {
         setPage(page - 1);
       } else {
@@ -156,11 +161,24 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
     }
   };
 
+  const handleOpenDeleteConfirm = (id) => {
+    setTodoIdToDelete(id);
+    setConfirmDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!todoIdToDelete) return;
+    const id = todoIdToDelete;
+    setConfirmDeleteOpen(false);
+    setTodoIdToDelete(null);
+    await handleDeleteTodo(id);
+  };
+
   return (
     <Container maxWidth={false} sx={{ py: 4, minHeight: '100vh', display: 'flex', flexDirection: 'column', px: { xs: 2, sm: 4, md: 6 } }}>
-      
+
       {/* Header Section */}
-      <Header 
+      <Header
         onAddClick={handleOpenAddDialog}
         themeMode={themeMode}
         onThemeToggle={onThemeToggle}
@@ -169,10 +187,10 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
 
       {/* Task Table and Filters Card */}
       <Box sx={{ flexGrow: 1 }}>
-        <Paper 
-          sx={{ 
-            borderRadius: 3, 
-            border: '1px solid', 
+        <Paper
+          sx={{
+            borderRadius: 3,
+            border: '1px solid',
             borderColor: 'divider',
             overflow: 'hidden',
             display: 'flex',
@@ -181,7 +199,7 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
           }}
         >
           {/* Table Toolbar */}
-          <TodoToolbar 
+          <TodoToolbar
             search={search}
             onSearchChange={handleSearchChange}
             statusFilter={statusFilter}
@@ -189,12 +207,15 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
             isActionLoading={isActionLoading}
           />
 
-          {/* Action Loader Progress */}
-          {isActionLoading && <LinearProgress color="primary" sx={{ height: 2 }} />}
-          {!isActionLoading && <Box sx={{ height: 2 }} />}
+          {/* Loader Progress (Action or Fetching) */}
+          {(isActionLoading || isFetching) ? (
+            <LinearProgress color="primary" sx={{ height: 2 }} />
+          ) : (
+            <Box sx={{ height: 2 }} />
+          )}
 
           {/* Table */}
-          <TodoTable 
+          <TodoTable
             todos={todos}
             totalTodos={totalTodos}
             isFetching={isFetching}
@@ -206,7 +227,7 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
             onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
             onToggle={handleToggleTodo}
             onEdit={handleOpenEditDialog}
-            onDelete={handleDeleteTodo}
+            onDelete={handleOpenDeleteConfirm}
           />
         </Paper>
       </Box>
@@ -222,6 +243,39 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
         loading={isActionLoading}
       />
 
+      {/* Confirm Delete Dialog */}
+      <Dialog
+        open={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        aria-labelledby="confirm-delete-dialog-title"
+        PaperProps={{
+          sx: { borderRadius: 3, p: 1, maxWidth: 400 }
+        }}
+      >
+        <DialogTitle id="confirm-delete-dialog-title" sx={{ fontWeight: 'bold', p: 2 }}>
+          Xác nhận xóa công việc
+        </DialogTitle>
+        <DialogContent sx={{ px: 2, py: 1 }}>
+          <Typography variant="body1" color="text.secondary">
+            Bạn có chắc chắn muốn xóa công việc này không?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, py: 2 }}>
+          <Button onClick={() => setConfirmDeleteOpen(false)} color="inherit" sx={{ px: 2 }}>
+            Hủy
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            autoFocus
+            sx={{ px: 3, minWidth: 80 }}
+          >
+            Xóa
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Toast Notifications */}
       <Snackbar
         open={toast.open}
@@ -229,10 +283,10 @@ const TodoBoard = ({ themeMode, onThemeToggle }) => {
         onClose={handleCloseToast}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={handleCloseToast} 
-          severity={toast.severity} 
-          variant="filled" 
+        <Alert
+          onClose={handleCloseToast}
+          severity={toast.severity}
+          variant="filled"
           sx={{ width: '100%', borderRadius: 2 }}
         >
           {toast.message}

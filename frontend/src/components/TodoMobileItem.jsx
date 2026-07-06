@@ -53,7 +53,8 @@ const TodoMobileItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
                     fontWeight: 600,
                     fontSize: '0.7rem',
                     backgroundColor: (theme) => theme.palette.custom.completedChipBg,
-                    color: (theme) => theme.palette.custom.completedChipText
+                    color: (theme) => theme.palette.custom.completedChipText,
+                    whiteSpace: 'nowrap'
                   }} 
                 />
               ) : (
@@ -64,7 +65,8 @@ const TodoMobileItem = ({ todo, onToggle, onEdit, onDelete, disabled }) => {
                   variant="outlined"
                   sx={{ 
                     fontWeight: 600,
-                    fontSize: '0.7rem'
+                    fontSize: '0.7rem',
+                    whiteSpace: 'nowrap'
                   }} 
                 />
               )}
